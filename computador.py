@@ -1,9 +1,12 @@
 import memory as mem
 import ufc2x as cpu
 import clock as clk
+import disk
 
-mem.write_word(200, 100)
-mem.write_word(201, 5)
+disk.read('test.bin')
+
+# mem.write_word(200, 100)
+# mem.write_word(201, 5)
 
 # ### MULTIPLICAÇÃO ####
 # # armazena X
