@@ -3,7 +3,7 @@ import ufc2x as cpu
 import clock as clk
 import disk
 
-disk.read('test.bin')
+disk.read('prog0.bin')
 
 # mem.write_word(200, 100)
 # mem.write_word(201, 5)

@@ -2,10 +2,10 @@
      wb 0        
     
 r     ww 0     
-a     ww 10      
-b     ww 5     
+a     ww 21     
+b     ww 3     
 
-main mult r, a, b
+main div r, a, b
      goto hlt
 
 jmp  add y, a
