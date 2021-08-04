@@ -16,6 +16,8 @@ instruction_set = {'add' : 0x02,
                    'mult': 0x15,
                    'div' : 0x1B}
 
+
+
 def is_instruction(str):
    global instructions
    inst = False
