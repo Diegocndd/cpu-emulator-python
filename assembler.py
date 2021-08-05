@@ -6,7 +6,7 @@ lines = []
 lines_bin = []
 names = []
 
-instructions = ['add', 'sub', 'goto', 'mov', 'jz', 'halt', 'wb', 'ww', 'mult','div']
+instructions = ['add', 'sub', 'goto', 'mov', 'jz', 'halt', 'wb', 'ww', 'mult','div', 'set']
 instruction_set = {'add' : 0x02, 
                    'sub' : 0x0D, 
                    'goto': 0x09, 
@@ -14,9 +14,8 @@ instruction_set = {'add' : 0x02,
                    'jz'  : 0x0B, 
                    'halt': 0xFF,
                    'mult': 0x15,
-                   'div' : 0x1B}
-
-
+                   'div' : 0x1B,
+                   'set' : 0x27}
 
 def is_instruction(str):
    global instructions
@@ -44,9 +43,17 @@ def encode_2ops(inst, ops):
             line_bin.append(instruction_set[inst])
             line_bin.append(ops[1])
       elif ops[0]=='y':
-         if(inst=='add'):
+        if(inst=='add'):
             if is_name(ops[1]):
                line_bin.append(instruction_set[inst]+0xF)
+               line_bin.append(ops[1])
+        elif(inst=='mov'):
+            if is_name(ops[1]):
+               line_bin.append(instruction_set[inst]+0x27)
+               line_bin.append(ops[1])
+        elif(inst=='set'):
+            if is_name(ops[1]):
+               line_bin.append(instruction_set[inst]+0x03)
                line_bin.append(ops[1])
          
    return line_bin
@@ -55,12 +62,26 @@ def encode_mult(inst,ops):
    line_bin=[]
    if len(ops) > 2:
       if is_name(ops[0]) and is_name(ops[1]) and is_name(ops[2]):
-         line_bin.append(instruction_set['add'])
+         line_bin.append(instruction_set['set'])
          line_bin.append(ops[1])
-         line_bin.append(instruction_set['add']+0xF)
+         line_bin.append(instruction_set['set']+0x03)
          line_bin.append(ops[2])
          line_bin.append(instruction_set[inst])
-         line_bin.append(0x25)
+         line_bin.append(0x24)
+         line_bin.append(ops[0])
+
+   return line_bin
+
+def encode_resto(inst,ops):
+   line_bin=[]
+   if len(ops) > 2:
+      if is_name(ops[0]) and is_name(ops[1]) and is_name(ops[2]):
+         line_bin.append(instruction_set['set'])
+         line_bin.append(ops[1])
+         line_bin.append(instruction_set['set']+0x03)
+         line_bin.append(ops[2])
+         line_bin.append(instruction_set[inst])
+         line_bin.append(0x2D)
          line_bin.append(ops[0])
 
    return line_bin
@@ -100,7 +121,7 @@ def encode_ww(ops):
    return line_bin
 
 def encode_instruction(inst, ops):
-   if inst == 'add' or inst == 'sub' or inst == 'mov' or inst == 'jz':
+   if inst == 'add' or inst == 'sub' or inst == 'mov' or inst == 'jz' or inst == 'set':
       return encode_2ops(inst, ops)
    elif inst == 'goto':
       return encode_goto(ops)
@@ -164,7 +185,7 @@ def resolve_names():
    for line in lines_bin:
       for i in range(0, len(line)):
          if is_name(line[i]):
-            if line[i-1] == instruction_set['add'] or line[i-1] == instruction_set['sub'] or line[i-1] == instruction_set['mov'] or line[i-1]==0x25 or line[i-1]==0x11:
+            if line[i-1] == instruction_set['add'] or line[i-1] == instruction_set['sub'] or line[i-1] == instruction_set['mov'] or line[i-1]==0x24 or line[i-1]==0x11 or line[i-1] == instruction_set['set'] or (line[i-1] == instruction_set['set']+0x03) or line[i-1] == (instruction_set['mov']+0x27):
                line[i] = get_name_byte(line[i])//4
             else:
                line[i] = get_name_byte(line[i])

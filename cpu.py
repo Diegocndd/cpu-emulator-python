@@ -65,73 +65,105 @@ firmware[268] = 0b100001101000001101010010000001001000
 firmware[269] = 0b000000000100000101000010000001010000 
             #PC <- MBR; fetch; GOTO MBR;
 
-# X = X - mem[address]
+#X = X - mem[address]
 firmware[13] = 0b000001110000001101010010000001001000 
-            # PC <- PC + 1; fetch;
+            #PC <- PC + 1; fetch;
 firmware[14] = 0b000001111000000101001000000010010000 
-            # MAR <- MBR; read;
+            #MAR <- MBR; read;
 firmware[15] = 0b000010000000000101000000010000000000
-            # H <- MDR;
+            #H <- MDR;
 firmware[16] = 0b000000000000001111110001000000011000 
-            # X <- X - H; GOTO MAIN;
+            #X <- X - H; GOTO MAIN;
 
-# Y = Y + mem[adress]
+#Y = Y + mem[adress]
 firmware[17] = 0b000010010000001101010010000001001000 
-            # PC <- PC + 1; MBR <- read_byte(PC); GOTO 18
+            #PC <- PC + 1; MBR <- read_byte(PC); GOTO 18
 firmware[18] = 0b000010011000000101001000000010010000 
-            # MAR <- MBR; read_word; GOTO 19
+            #MAR <- MBR; read_word; GOTO 19
 firmware[19] = 0b000010100000000101000000010000000000 
-            # H <- MDR; GOTO 20
+            #H <- MDR; GOTO 20
 firmware[20] = 0b000000000000001111000000100000100000 
-            # Y <- Y + H; GOTO MAIN;
+            #Y <- Y + H; GOTO MAIN;
 
-# H = X * Y
+#H = X * Y
 firmware[21] =0b000010110000000100000000010000000000
-            # H <- 0; GOTO 22
+            #H <- 0; GOTO 22
 firmware[22]= 0b000010111001000101000000000000011111
-            # IF ALU=0 Goto 279 ;ELSE Goto 23
+            #IF ALU=0 Goto 279 ;ELSE Goto 23
 firmware[279]=0b000000000000001101010000000001001000 
-            # GOTO MAIN
+            #GOTO MAIN
 firmware[23]= 0b000011000001000101000000000000100111
-            # IF ALU=0 Goto 280 ;ELSE Goto 24
+            #IF ALU=0 Goto 280 ;ELSE Goto 24
 firmware[280]=0b000000000000001101010000000001001000
-            # GOTO MAIN
+             #GOTO MAIN
 firmware[24]= 0b000011001000001111000000010000011000
-            # H<- H + X; GOTO 23
+            #H<- H + X; GOTO 23
 firmware[25] =0b000011010000001101100000100000100111
-            # Y <- Y - 1; GOTO 24
+            #Y <- Y - 1; GOTO 24
 firmware[26] =0b000011000001000101000000000000100111
-            # IF ALU = 0 GOTO 278;ELSE GOTO 24
+            #IF ALU = 0 GOTO 278;ELSE GOTO 24
 firmware[282]=0b000000000000001101010000000001001000
-            # GOTO MAIN
-
-# H = X / Y
+            #GOTO MAIN
+#H= X/Y
 firmware[27]= 0b000011100000000100000000010000000000
-            # H<-0 
+            #H<-0 
 firmware[28]= 0b000011101001000101000000000000100111    
-            # IF Y=0 GOTO 285; ELSE GOTO 29  
+            #IF Y=0 GOTO 285; ELSE GOTO 29  
 firmware[285]=0b011111111000001101010000000001001000
-            # GOTO HALT
+            #GOTO HALT
 firmware[29]= 0b000011110001000101000000000000011111 
-            # IF X=0 GOTO 286; ELSE GOTO 30
+            #IF X=0 GOTO 286; ELSE GOTO 30
 firmware[286]=0b000000000000001101010000000001001000
-            # GOTO MAIN
+            #GOTO MAIN
 firmware[30]= 0b000011111000000100000000001000000111
-            # K<-0
+            #K<-0
 firmware[31]= 0b000100000000001110010000001000000011
-            # K<-K+1
+            #K<-K+1
 firmware[32]= 0b000100001001001111110000000000100011
-            # IF Y-K=0 GOTO 289;ELSE GOTO 33
+            #IF Y-K=0 GOTO 289;ELSE GOTO 33
 firmware[289]=0b000100010000001101010000000000111111
-            # GOTO 34
+            #GOTO 34
 firmware[33]= 0b000011111001001111110000000000011011
-            # IF (X-K)=0 GOTO 289 ;ELSE GOTO 31
+            #IF (X-K)=0 GOTO 289 ;ELSE GOTO 31
 firmware[287]=0b000000000000001101010000000001001000
-            # GOTO MAIN
+            #GOTO MAIN
 firmware[34]= 0b000100011000001111110001000000011010
-            # X<-X-Y
+            #X<-X-Y
 firmware[35]= 0b000011101000001110010000010000111000
-            # H <- H+1
+            #H <- H+1
+
+#mem[address] = H
+firmware[36] = 0b000100101000001101010010000001001000 
+            #PC <- PC + 1; fetch; GOTO 37
+firmware[37] = 0b000100110000000101001000000000010000 
+            #MAR <- MBR; GOTO 38
+firmware[38] = 0b000000000000000110000100000100111000 
+            #MDR <- X; write; GOTO MAIN
+
+#X = mem[address]
+firmware[39] = 0b000101000000001101010010000001001000 
+            #PC <- PC + 1; MBR <- read_byte(PC); GOTO 40
+firmware[40] = 0b000101001000000101001000000010010000 
+            #MAR <- MBR; read_word; GOTO 41
+firmware[41] = 0b000000000000000101000001000000000111 
+            #X <- MDR; GOTO MAIN
+
+#Y = mem[address]
+firmware[42] = 0b000101011000001101010010000001001000 
+            #PC <- PC + 1; MBR <- read_byte(PC); GOTO 43
+firmware[43] = 0b000101100000000101001000000010010000 
+            #MAR <- MBR; read_word; GOTO 44
+firmware[44] = 0b000000000000000101000000100000000111 
+            #Y <- MDR; GOTO MAIN
+
+#mem[address] = Y
+firmware[45] = 0b000101110000001101010010000001001000 
+            #PC <- PC + 1; fetch; GOTO 34
+firmware[46] = 0b000101111000000101001000000000010000 
+            #MAR <- MBR; GOTO 35
+firmware[47] = 0b000000000000000101000100000100100111 
+            #MDR <- X; write; GOTO MAIN
+
 
 def read_regs(reg_numA, reg_numB):
     global BUS_A, BUS_B, H, MDR, PC, MBR, X, Y,K
